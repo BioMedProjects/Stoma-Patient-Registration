@@ -1,0 +1,5 @@
+.venv
+db.sqlite3
+.idea
+stoma_patient_app/__pycache__
+users/__pycache__
