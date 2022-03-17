@@ -8,10 +8,14 @@ from rest_framework.authtoken.models import Token
 class UserCreateSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(label="Email Address")
     email2 = serializers.EmailField(label="Confirm Email")
+    is_staff = serializers.BooleanField(label="I am Doctor")
 
     class Meta:
         model = User
         fields = [
+            'is_staff',
+            'first_name',
+            'last_name',
             'username',
             'email',
             'email2',
@@ -35,10 +39,16 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        is_staff = validated_data['is_staff']
+        first_name = validated_data['first_name']
+        last_name = validated_data['last_name']
         username = validated_data['username']
         email = validated_data['email']
         password = validated_data['password']
         user_obj = User(
+            is_staff=is_staff,
+            first_name=first_name,
+            last_name=last_name,
             username=username,
             email=email,
         )
