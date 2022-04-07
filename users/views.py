@@ -3,7 +3,6 @@ from django.shortcuts import render
 # Create your views here.
 
 from django.contrib.auth.models import User
-from rest_framework import permissions
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -31,7 +30,6 @@ class UserLoginAPIView(APIView):
         if serializer.is_valid(raise_exception=True):
             new_data = serializer.data
             new_data['user_id'] = User.objects.filter(
-                username=new_data['username'],
                 email=new_data['email'],
             ).first().id
             return Response(new_data, status=HTTP_200_OK)
@@ -50,7 +48,6 @@ def logout(request):
 
 
 class ListUsersAPIView(APIView):
-    permission_classes = [permissions.IsAdminUser]
 
     def get(self, request, format=None):
         data = [{
@@ -58,7 +55,6 @@ class ListUsersAPIView(APIView):
             "is_staff": obj.is_staff,
             "first_name": obj.first_name,
             "last_name": obj.last_name,
-            "username": obj.username,
             "email": obj.email,
         } for obj in User.objects.all()]
         return Response(data)
@@ -71,7 +67,6 @@ def get_doctors(request):
         "is_staff": obj.is_staff,
         "first_name": obj.first_name,
         "last_name": obj.last_name,
-        "username": obj.username,
         "email": obj.email,
     } for obj in User.objects.filter(is_staff=True)]
     if data:
@@ -87,7 +82,6 @@ def get_doctor(request, id):
         "is_staff": obj.is_staff,
         "first_name": obj.first_name,
         "last_name": obj.last_name,
-        "username": obj.username,
         "email": obj.email,
     } for obj in User.objects.filter(id=id, is_staff=True)]
     if data:

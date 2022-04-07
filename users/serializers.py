@@ -16,7 +16,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'is_staff',
             'first_name',
             'last_name',
-            'username',
             'email',
             'email2',
             'password',
@@ -42,14 +41,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
         is_staff = validated_data['is_staff']
         first_name = validated_data['first_name']
         last_name = validated_data['last_name']
-        username = validated_data['username']
         email = validated_data['email']
         password = validated_data['password']
         user_obj = User(
             is_staff=is_staff,
             first_name=first_name,
             last_name=last_name,
-            username=username,
             email=email,
         )
         user_obj.set_password(password)
@@ -59,13 +56,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(ModelSerializer):
     token = serializers.CharField(allow_blank=True, read_only=True)
-    username = serializers.CharField(allow_blank=True, required=False)
-    email = serializers.EmailField(label="Email Address", allow_blank=True, required=False)
+    email = serializers.EmailField(label="Email Address", allow_blank=False, required=True)
 
     class Meta:
         model = User
         fields = [
-            'username',
             'email',
             'password',
             'token',
@@ -78,18 +73,17 @@ class UserLoginSerializer(ModelSerializer):
 
     def validate(self, data):
         email = data.get("email", None)
-        username = data.get("username", None)
         password = data['password']
-        if not email and not username:
-            raise serializers.ValidationError("A username or email is required to login.")
+        if not email:
+            raise serializers.ValidationError("An email is required to login.")
 
         # check if user exists
-        user = User.objects.filter(email=email, username=username)
+        user = User.objects.filter(email=email)
         user = user.exclude(email__isnull=True).exclude(email__iexact='')
         if user.exists() and user.count() == 1:
             user_obj = user.first()
         else:
-            raise serializers.ValidationError("This username/email is not valid")
+            raise serializers.ValidationError("This email is not valid")
 
         if user:
             if not user_obj.check_password(password):
