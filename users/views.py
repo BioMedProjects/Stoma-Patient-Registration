@@ -32,8 +32,9 @@ class UserLoginAPIView(APIView):
             new_data['user_id'] = User.objects.filter(
                 email=new_data['email'],
             ).first().id
-            return Response(new_data, status=HTTP_200_OK)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+            return Response(data={"success": True, "data": new_data}, status=HTTP_200_OK)
+        return Response(data={"success": False, "data": {"error_message": serializer.errors,
+                                                    "error_code": HTTP_400_BAD_REQUEST}}, status=HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -43,11 +44,12 @@ def logout(request):
     print("token to delete: ", token_to_delete)
     if token_to_delete:
         token_to_delete.delete()
-        return Response(status=HTTP_200_OK)
-    return Response(status=HTTP_400_BAD_REQUEST)
+        return Response(data={"success": True, "data": ""}, status=HTTP_200_OK)
+    return Response(data={"success": False, "data": {"error_message": "Bad request",
+                                                "error_code": HTTP_400_BAD_REQUEST}}, status=HTTP_400_BAD_REQUEST)
 
 
-class ListUsersAPIView(APIView):
+class ListPatientsAPIView(APIView):
 
     def get(self, request, format=None):
         data = [{
@@ -56,23 +58,33 @@ class ListUsersAPIView(APIView):
             "first_name": obj.first_name,
             "last_name": obj.last_name,
             "email": obj.email,
-        } for obj in User.objects.all()]
-        return Response(data)
+        } for obj in User.objects.filter(is_staff=False)]
+        if data:
+            return Response(data={"success": True, "data": data}, status=HTTP_200_OK)
+        else:
+            return Response(data={"success": False, "data": {"error_message": "No registered patients",
+                                                "error_code": HTTP_400_BAD_REQUEST}}, status=HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
-def get_doctors(request):
-    data = [{
-        "id": obj.id,
-        "is_staff": obj.is_staff,
-        "first_name": obj.first_name,
-        "last_name": obj.last_name,
-        "email": obj.email,
-    } for obj in User.objects.filter(is_staff=True)]
-    if data:
-        return Response(data=data, status=HTTP_200_OK)
-    else:
-        return Response(data="No registered doctors", status=HTTP_400_BAD_REQUEST)
+class ListDoctorsAPIView(APIView):
+
+    def get(self, request, format=None):
+        data = [{
+            "id": obj.id,
+            "is_staff": obj.is_staff,
+            "first_name": obj.first_name,
+            "last_name": obj.last_name,
+            "email": obj.email,
+        } for obj in User.objects.filter(is_staff=True)]
+        if data:
+            return Response(data={"success": True, "data": data}, status=HTTP_200_OK)
+        else:
+            return Response(data={"success": False,
+                                  "data": {
+                                      "error_message": "No registered doctors",
+                                      "error_code": HTTP_400_BAD_REQUEST
+                                  }
+                                  }, status=HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -85,6 +97,29 @@ def get_doctor(request, id):
         "email": obj.email,
     } for obj in User.objects.filter(id=id, is_staff=True)]
     if data:
-        return Response(data=data, status=HTTP_200_OK)
+        return Response(data={"success": True, "data": data}, status=HTTP_200_OK)
     else:
-        return Response(data="There is no doctor with such id", status=HTTP_400_BAD_REQUEST)
+        return Response(data={"success": False,
+                                  "data": {
+                                      "error_message": "There is no doctor with such id",
+                                      "error_code": HTTP_400_BAD_REQUEST
+                                  }}, status=HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_patient(request, id):
+    data = [{
+        "id": obj.id,
+        "is_staff": obj.is_staff,
+        "first_name": obj.first_name,
+        "last_name": obj.last_name,
+        "email": obj.email,
+    } for obj in User.objects.filter(id=id, is_staff=False)]
+    if data:
+        return Response(data={"success": True, "data": data}, status=HTTP_200_OK)
+    else:
+        return Response(data={"success": False,
+                                  "data": {
+                                      "error_message": "There is no patient with such id",
+                                      "error_code": HTTP_400_BAD_REQUEST
+                                  }}, status=HTTP_400_BAD_REQUEST)

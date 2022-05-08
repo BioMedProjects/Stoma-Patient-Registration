@@ -1,3 +1,6 @@
+import random
+import string
+
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -45,6 +48,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         password = validated_data['password']
         user_obj = User(
             is_staff=is_staff,
+            username=f"{''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))}",
             first_name=first_name,
             last_name=last_name,
             email=email,

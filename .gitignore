@@ -3,3 +3,6 @@ db.sqlite3
 .idea
 stoma_patient_app/__pycache__
 users/__pycache__
+users/migrations/__pycache__/
+visits/migrations/__pycache__/
+visits/__pycache__
