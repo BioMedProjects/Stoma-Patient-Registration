@@ -53,23 +53,20 @@ class VisitSerializer(serializers.ModelSerializer):
         visit_obj.save()
         return validated_data
 
-    # def validate(self, data):
-    #     first_patient_name = data.get("first_patient_name", None)
-    #     last_patient_name = data.get("last_patient_name", None)
-    #     first_doctor_name = data.get("first_doctor_name", None)
-    #     last_doctor_name = data.get("last_doctor_name", None)
-    #     visit_date = data.get("visit_date", None)
-    #     visit_time = data.get("visit_time", None)
-    #
-    #     if not first_patient_name or not last_patient_name or not first_doctor_name\
-    #             or not first_doctor_name or not last_doctor_name or not visit_date or not visit_time:
-    #         raise serializers.ValidationError("All fields are required to create visit.")
-    #
-    #     # check if visit exists
-    #     visit = Visit.objects.filter(visit_date=visit_date, visit_time=visit_time, last_doctor_name=last_doctor_name)
-    #     if visit.exists() and visit.count() == 1:
-    #         visit_obj = visit.first()
-    #     else:
-    #         raise serializers.ValidationError("This appointment is already booked")
-    #
-    #     return data
+    def validate(self, data):
+        first_patient_name = data.get("first_patient_name", None)
+        last_patient_name = data.get("last_patient_name", None)
+        first_doctor_name = data.get("first_doctor_name", None)
+        last_doctor_name = data.get("last_doctor_name", None)
+        visit_date = data.get("visit_date", None)
+        visit_slot = data.get("visit_slot", None)
+
+        if not first_patient_name or not last_patient_name or not first_doctor_name\
+                or not first_doctor_name or not last_doctor_name or not visit_date or not visit_slot:
+            raise serializers.ValidationError("All fields are required to create visit.")
+
+        # check if visit exists
+        visit = Visit.objects.filter(visit_date=visit_date, visit_slot=visit_slot, last_doctor_name=last_doctor_name)
+        if visit.exists():
+            raise serializers.ValidationError("This date is already taken")
+        return data
