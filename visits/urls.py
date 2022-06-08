@@ -9,6 +9,6 @@ urlpatterns = [
     path('list_visits/<int:id>', get_visit),
     path('list_doctor_visits/<int:doctor_id>', get_doctor_visits),
     path('list_patient_visits/<int:patient_id>', get_patient_visits),
-    path('delete_visit/<int:visit_id>', delete_visit),
+    path('delete_visit/', delete_visit),
     path('get_free_slots/<int:doctor_id>/<str:visit_date>', get_free_slots),
 ]

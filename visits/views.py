@@ -111,7 +111,7 @@ def get_patient_visits(request, patient_id):
         "last_doctor_name": obj.last_patient_name,
         "visit_date": obj.visit_date,
         "visit_slot": obj.visit_slot,
-        "doctor_id": obj.patient_id,
+        "doctor_id": obj.doctor_id,
     } for obj in Visit.objects.filter(patient_id=patient_id)]
     if data:
         return Response(data={"success": True, "data": data}, status=HTTP_200_OK)
@@ -122,10 +122,12 @@ def get_patient_visits(request, patient_id):
             }}, status=HTTP_400_BAD_REQUEST)
 
 
-# nie działa
-@api_view(['DELETE'])
-def delete_visit(request, visit_id):
-    visit_to_delete = Visit.objects.get(id=visit_id)
+@api_view(['POST'])
+def delete_visit(request):
+    # sample request: {"data": {"visit": {"visit_date": "2022-05-27", "visit_slot": "10:40:00"}}}
+    print("request: ", request.data)
+    visit_to_delete = Visit.objects.filter(visit_date=request.data['data']['visit']['visit_date'],
+                                           visit_slot=request.data['data']['visit']['visit_slot'])
     if visit_to_delete:
         visit_to_delete.delete()
         return Response(data={"success": True, "data": ""}, status=HTTP_200_OK)

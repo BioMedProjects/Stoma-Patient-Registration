@@ -39,7 +39,8 @@ class UserLoginAPIView(APIView):
 
 @api_view(['POST'])
 def logout(request):
-    print("request: ", request.data, type(request.data))
+    # sample request for token 'abc123' -> {"data": "abc123"}
+    print("request: ", request.data)
     token_to_delete = Token.objects.filter(key=request.data['data'])
     print("token to delete: ", token_to_delete)
     if token_to_delete:
