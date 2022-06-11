@@ -32,6 +32,10 @@ class UserLoginAPIView(APIView):
             new_data['user_id'] = User.objects.filter(
                 email=new_data['email'],
             ).first().id
+
+            is_staff = [obj.is_staff for obj in User.objects.filter(email=new_data['email'])]
+            new_data['is_staff'] = is_staff[0]
+
             return Response(data={"success": True, "data": new_data}, status=HTTP_200_OK)
         return Response(data={"success": False, "data": {"error_message": serializer.errors,
                                                     "error_code": HTTP_400_BAD_REQUEST}}, status=HTTP_400_BAD_REQUEST)
