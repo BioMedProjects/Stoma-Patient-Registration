@@ -6,3 +6,26 @@ users/__pycache__
 users/migrations/__pycache__/
 visits/migrations/__pycache__/
 visits/__pycache__
+
+
+# dependencies
+/stoma-frontend/node_modules
+/stoma-frontend/.pnp
+/stoma-frontend/.pnp.js
+
+# testing
+/stoma-frontend/coverage
+
+# production
+/stoma-frontend/build
+
+# misc
+/stoma-frontend/.DS_Store
+/stoma-frontend/.env.local
+/stoma-frontend/.env.development.local
+/stoma-frontend/.env.test.local
+/stoma-frontend/.env.production.local
+
+/stoma-frontend/npm-debug.log*
+/stoma-frontend/yarn-debug.log*
+/stoma-frontend/yarn-error.log*

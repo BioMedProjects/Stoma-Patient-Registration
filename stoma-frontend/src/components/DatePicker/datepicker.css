@@ -1,0 +1,7 @@
+.react-datepicker button {
+    top: 10px;
+}
+
+.react-datepicker-wrapper {
+    width: auto !important;
+}
