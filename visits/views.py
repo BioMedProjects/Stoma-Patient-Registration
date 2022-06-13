@@ -107,12 +107,12 @@ def get_free_slots(request, doctor_id, visit_date):
 def get_patient_visits(request, patient_id):
     data = [{
         "id": obj.id,
-        "first_doctor_name": obj.first_patient_name,
-        "last_doctor_name": obj.last_patient_name,
+        "first_doctor_name": obj.first_doctor_name,
+        "last_doctor_name": obj.last_doctor_name,
         "visit_date": obj.visit_date,
         "visit_slot": obj.visit_slot,
         "doctor_id": obj.doctor_id,
-    } for obj in Visit.objects.filter(patient_id=patient_id)]
+    } for obj in Visit.objects.filter(patient_id=patient_id).order_by('visit_date')]
     if data:
         return Response(data={"success": True, "data": data}, status=HTTP_200_OK)
     else:

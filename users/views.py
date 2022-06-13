@@ -80,7 +80,8 @@ class ListDoctorsAPIView(APIView):
             "first_name": obj.first_name,
             "last_name": obj.last_name,
             "email": obj.email,
-        } for obj in User.objects.filter(is_staff=True)]
+        } for obj in User.objects.filter(is_staff=True).exclude(first_name="", last_name="")]
+        print(data)
         if data:
             return Response(data={"success": True, "data": data}, status=HTTP_200_OK)
         else:
